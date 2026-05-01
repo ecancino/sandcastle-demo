@@ -1,0 +1,26 @@
+{
+  "name": "sandcastle-demo",
+  "version": "0.1.0",
+  "type": "module",
+  "bin": {
+    "sandcastle-demo": "./dist/cli.js"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "sandcastle": "npx tsx .sandcastle/main.mts"
+  },
+  "dependencies": {
+    "@ai-hero/sandcastle": "^0.5.6",
+    "commander": "^13.1.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.3",
+    "vite": "^6.3.4",
+    "vite-plugin-dts": "^4.5.4",
+    "vitest": "^3.1.3"
+  }
+}
