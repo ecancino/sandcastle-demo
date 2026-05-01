@@ -6,7 +6,7 @@
     "sandcastle-demo": "./dist/cli.js"
   },
   "scripts": {
-    "dev": "vite",
+    "dev": "npx tsx src/cli.ts",
     "build": "vite build",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
