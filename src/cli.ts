@@ -1,5 +1,6 @@
 import { Command } from "commander";
 import { greet } from "./greet.js";
+import { fetchWeather, formatWeather } from "./weather.js";
 
 export function buildProgram(): Command {
   const program = new Command();
@@ -12,6 +13,21 @@ export function buildProgram(): Command {
     .argument("[name]", "name to greet")
     .action((name?: string) => {
       console.log(greet(name));
+    });
+
+  program
+    .command("weather")
+    .description("Show current weather for a city")
+    .argument("<city>", "city to get weather for")
+    .action(async (city: string) => {
+      try {
+        const data = await fetchWeather(city);
+        console.log(formatWeather(data));
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        console.error(`Error: ${message}`);
+        process.exitCode = 1;
+      }
     });
 
   return program;
