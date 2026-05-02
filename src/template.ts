@@ -23,6 +23,6 @@ export const DEFAULT_WEATHER_TEMPLATE = [
   "  UV Index:      {{uvIndex}}",
   "  Precipitation: {{precipitationMM}} mm",
   "",
-  "  More details: https://wttr.in/{{city}}",
+  "  More details: https://wttr.in/{{cityUrl}}",
   "",
 ].join("\n");

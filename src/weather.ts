@@ -1,6 +1,7 @@
 import { renderTemplate, DEFAULT_WEATHER_TEMPLATE } from "./template.js";
 
 export interface WeatherData {
+  [key: string]: string;
   city: string;
   country: string;
   region: string;
@@ -61,5 +62,9 @@ export function formatWeather(
   data: WeatherData,
   template?: string
 ): string {
-  return renderTemplate(template ?? DEFAULT_WEATHER_TEMPLATE, data as unknown as Record<string, string>);
+  const templateData: Record<string, string> = {
+    ...data,
+    cityUrl: data.city.replace(/ /g, "+"),
+  };
+  return renderTemplate(template ?? DEFAULT_WEATHER_TEMPLATE, templateData);
 }
