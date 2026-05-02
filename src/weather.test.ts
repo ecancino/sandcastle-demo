@@ -119,4 +119,18 @@ describe("formatWeather", () => {
     const output = formatWeather(expectedWeatherData);
     expect(output).toContain("https://wttr.in/London");
   });
+
+  it("accepts a custom template", () => {
+    const output = formatWeather(
+      expectedWeatherData,
+      "{{city}}: {{temperatureC}}°C"
+    );
+    expect(output).toBe("London: 18°C");
+  });
+
+  it("uses the default template when none is provided", () => {
+    const defaultOutput = formatWeather(expectedWeatherData);
+    const explicitDefault = formatWeather(expectedWeatherData, undefined);
+    expect(defaultOutput).toBe(explicitDefault);
+  });
 });

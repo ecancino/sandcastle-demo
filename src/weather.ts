@@ -1,3 +1,5 @@
+import { renderTemplate, DEFAULT_WEATHER_TEMPLATE } from "./template.js";
+
 export interface WeatherData {
   city: string;
   country: string;
@@ -55,26 +57,9 @@ export async function fetchWeather(city: string): Promise<WeatherData> {
   }
 }
 
-export function formatWeather(data: WeatherData): string {
-  const lines = [
-    ``,
-    `  Weather for ${data.city}, ${data.country}`,
-    `  ${data.region}`,
-    ``,
-    `  ${data.description}`,
-    ``,
-    `  Temperature:   ${data.temperatureC}°C / ${data.temperatureF}°F`,
-    `  Feels like:    ${data.feelsLikeC}°C / ${data.feelsLikeF}°F`,
-    `  Humidity:      ${data.humidity}%`,
-    `  Wind:          ${data.windSpeedKmph} km/h ${data.windDirection}`,
-    `  Pressure:      ${data.pressure} hPa`,
-    `  Visibility:    ${data.visibility} km`,
-    `  UV Index:      ${data.uvIndex}`,
-    `  Precipitation: ${data.precipitationMM} mm`,
-    ``,
-    `  More details: https://wttr.in/${data.city.replace(/ /g, "+")}`,
-    ``,
-  ];
-
-  return lines.join("\n");
+export function formatWeather(
+  data: WeatherData,
+  template?: string
+): string {
+  return renderTemplate(template ?? DEFAULT_WEATHER_TEMPLATE, data as unknown as Record<string, string>);
 }
