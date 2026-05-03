@@ -59,7 +59,7 @@ Displays temperature, humidity, wind, pressure, visibility, UV index, and precip
 
 ```
 src/
-├── cli.ts              # CLI entry point (Commander program)
+├── cli.ts                   # CLI entry point (Commander program)
 ├── cli.test.ts              # CLI unit tests
 ├── cli-integration.test.ts  # CLI integration tests
 ├── weather.ts               # Weather fetching and formatting

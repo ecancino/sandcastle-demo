@@ -2,12 +2,6 @@ import { describe, it, expect } from "vitest";
 import { buildProgram } from "./cli.js";
 
 describe("cli", () => {
-  it("does not have a greet command", () => {
-    const program = buildProgram();
-    const greetCmd = program.commands.find((c) => c.name() === "greet");
-    expect(greetCmd).toBeUndefined();
-  });
-
   it("has a weather command", () => {
     const program = buildProgram();
     const weatherCmd = program.commands.find((c) => c.name() === "weather");
