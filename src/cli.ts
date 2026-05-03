@@ -1,19 +1,10 @@
 import { Command } from "commander";
-import { greet } from "./greet.js";
 import { fetchWeather, formatWeather } from "./weather.js";
 
 export function buildProgram(): Command {
   const program = new Command();
 
   program.name("sandcastle-demo").description("A simple CLI demo").version("0.1.0");
-
-  program
-    .command("greet")
-    .description("Print a greeting")
-    .argument("[name]", "name to greet")
-    .action((name?: string) => {
-      console.log(greet(name));
-    });
 
   program
     .command("weather")

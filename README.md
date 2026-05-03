@@ -35,18 +35,6 @@ sandcastle-demo <command> [options]
 
 ## Commands
 
-### `greet [name]`
-
-Print a greeting. If no name is provided, greets "stranger".
-
-```bash
-npm run dev -- greet World
-# Hello, World!
-
-npm run dev -- greet
-# Hello, stranger!
-```
-
 ### `weather <city>`
 
 Show current weather for a city (powered by [wttr.in](https://wttr.in)).
@@ -72,10 +60,10 @@ Displays temperature, humidity, wind, pressure, visibility, UV index, and precip
 ```
 src/
 ├── cli.ts              # CLI entry point (Commander program)
-├── cli.test.ts         # CLI unit tests
+├── cli.test.ts              # CLI unit tests
 ├── cli-integration.test.ts  # CLI integration tests
-├── greet.ts            # Greeting function
-├── greet.test.ts       # Greeting tests
-├── weather.ts          # Weather fetching and formatting
-└── weather.test.ts     # Weather tests
+├── weather.ts               # Weather fetching and formatting
+├── weather.test.ts          # Weather tests
+├── template.ts              # Pug template rendering
+└── template.test.ts         # Template tests
 ```
