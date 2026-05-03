@@ -1,8 +1,9 @@
 import { describe, it, expect, vi, beforeEach, beforeAll } from "vitest";
 import chalk from "chalk";
 import { fetchURL } from "./utils.js";
-import { fetchWeather, formatWeather, type WeatherData } from "./weather.js";
+import { fetchWeather, formatWeather } from "./weather.js";
 import { stripAnsi } from "./test-utils.js";
+import type { WeatherData } from "./parseData.js";
 
 vi.mock("./utils.js", async (importOriginal) => {
   const actual = await importOriginal<typeof import("./utils.js")>();
@@ -76,14 +77,20 @@ describe("fetchWeather", () => {
     mockFetch.mockResolvedValue(sampleApiResponse);
 
     await fetchWeather("New York");
-    expect(mockFetch).toHaveBeenCalledWith("https://wttr.in/New+York?format=j1");
+    expect(mockFetch).toHaveBeenCalledWith(
+      "https://wttr.in/New+York?format=j1",
+    );
   });
 
   it("throws on non-ok response", async () => {
-    mockFetch.mockRejectedValue(new Error("Failed to fetch https://wttr.in/InvalidCity123?format=j1: 404"));
+    mockFetch.mockRejectedValue(
+      new Error(
+        "Failed to fetch https://wttr.in/InvalidCity123?format=j1: 404",
+      ),
+    );
 
     await expect(fetchWeather("InvalidCity123")).rejects.toThrow(
-      "Failed to fetch"
+      "Failed to fetch",
     );
   });
 });

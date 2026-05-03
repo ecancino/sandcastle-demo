@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeAll } from "vitest";
 import chalk from "chalk";
-import { colorizeWeatherValues } from "./colors.js";
+import { colorize } from "./colors.js";
 import { stripAnsi } from "./test-utils.js";
 
 beforeAll(() => {
@@ -9,7 +9,7 @@ beforeAll(() => {
 
 const ESC = "\x1b[";
 
-describe("colorizeWeatherValues", () => {
+describe("colorize", () => {
   const input: Record<string, string> = {
     city: "London",
     country: "United Kingdom",
@@ -30,24 +30,24 @@ describe("colorizeWeatherValues", () => {
   };
 
   it("returns an object with the same keys", () => {
-    const result = colorizeWeatherValues(input);
+    const result = colorize(input);
     expect(Object.keys(result).sort()).toEqual(Object.keys(input).sort());
   });
 
   it("applies ANSI codes to city", () => {
-    const result = colorizeWeatherValues(input);
+    const result = colorize(input);
     expect(result.city).toContain(ESC);
     expect(result.city).toContain("London");
   });
 
   it("applies ANSI codes to description", () => {
-    const result = colorizeWeatherValues(input);
+    const result = colorize(input);
     expect(result.description).toContain(ESC);
     expect(result.description).toContain("Partly cloudy");
   });
 
   it("applies ANSI codes to temperature values", () => {
-    const result = colorizeWeatherValues(input);
+    const result = colorize(input);
     expect(result.temperatureC).toContain(ESC);
     expect(result.temperatureC).toContain("18");
     expect(result.temperatureF).toContain(ESC);
@@ -55,24 +55,24 @@ describe("colorizeWeatherValues", () => {
   });
 
   it("applies ANSI codes to humidity", () => {
-    const result = colorizeWeatherValues(input);
+    const result = colorize(input);
     expect(result.humidity).toContain(ESC);
     expect(result.humidity).toContain("72");
   });
 
   it("applies ANSI codes to wind values", () => {
-    const result = colorizeWeatherValues(input);
+    const result = colorize(input);
     expect(result.windSpeedKmph).toContain(ESC);
     expect(result.windDirection).toContain(ESC);
   });
 
-  it("leaves cityUrl uncolored for valid URLs", () => {
-    const result = colorizeWeatherValues(input);
+  it("leaves cityUrl uncolored", () => {
+    const result = colorize(input);
     expect(result.cityUrl).toBe("London");
   });
 
   it("preserves all original text content within ANSI codes", () => {
-    const result = colorizeWeatherValues(input);
+    const result = colorize(input);
     for (const key of Object.keys(input)) {
       expect(stripAnsi(result[key])).toBe(input[key]);
     }

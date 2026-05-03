@@ -1,13 +1,6 @@
 import pug from "pug";
 
-export function renderTemplate(
-  template: string,
-  data: Record<string, string>
-): string {
-  return pug.render(template, data);
-}
-
-export const DEFAULT_WEATHER_TEMPLATE = `
+const DEFAULT_WEATHER_TEMPLATE = `
 |   Weather for !{city}, !{country}
 |   !{region}
 |
@@ -24,3 +17,7 @@ export const DEFAULT_WEATHER_TEMPLATE = `
 |
 |   More details: https://wttr.in/!{cityUrl}
 |`;
+
+export function renderTemplate(data: Record<string, string>): string {
+  return pug.render(DEFAULT_WEATHER_TEMPLATE, data);
+}
