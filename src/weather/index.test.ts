@@ -1,6 +1,10 @@
 import { describe, it, expect } from "vitest";
-import { fetchWeather, formatWeather } from "./index.js";
-import { renderTemplate, DEFAULT_WEATHER_TEMPLATE } from "./template.js";
+import {
+  fetchWeather,
+  formatWeather,
+  renderTemplate,
+  DEFAULT_WEATHER_TEMPLATE,
+} from "./index.js";
 
 describe("weather module barrel export", () => {
   it("exports fetchWeather", () => {
