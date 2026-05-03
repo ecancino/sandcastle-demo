@@ -43,18 +43,17 @@ export interface WeatherData {
   precipitationMM: string;
 }
 
-export async function fetchWeather(city: string): Promise<WeatherData> {
-  const url = `https://wttr.in/${encodeCity(city)}?format=j1`;
-
-  const data = await fetchURL<WttrResponse>(url);
-
-  const current = data.current_condition[0];
-  const area = data.nearest_area[0];
+function parseWeatherData(weatherData: WttrResponse): WeatherData {
+  const [current] = weatherData.current_condition;
+  const [area] = weatherData.nearest_area;
+  const [city] = area.areaName;
+  const [country] = area.country;
+  const [region] = area.region;
 
   return {
-    city: area.areaName[0].value,
-    country: area.country[0].value,
-    region: area.region[0].value,
+    city: city.value,
+    country: country.value,
+    region: region.value,
     temperatureC: current.temp_C,
     temperatureF: current.temp_F,
     feelsLikeC: current.FeelsLikeC,
@@ -68,6 +67,14 @@ export async function fetchWeather(city: string): Promise<WeatherData> {
     uvIndex: current.uvIndex,
     precipitationMM: current.precipMM,
   };
+}
+
+export async function fetchWeather(city: string): Promise<WeatherData> {
+  const weatherData = await fetchURL<WttrResponse>(
+    `https://wttr.in/${encodeCity(city)}?format=j1`,
+  );
+
+  return parseWeatherData(weatherData);
 }
 
 export function formatWeather(data: WeatherData): string {
