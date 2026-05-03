@@ -60,16 +60,17 @@ Displays temperature, humidity, wind, pressure, visibility, UV index, and precip
 ## Scripts
 
 | Script | Description |
-|---|---|
+| --- | --- |
 | `npm run dev` | Run the CLI in dev mode via tsx |
 | `npm run build` | Build for production with Vite |
 | `npm run typecheck` | Type-check with TypeScript |
 | `npm run test` | Run tests with Vitest |
 | `npm run test:watch` | Run tests in watch mode |
+| `npm run lint:md` | Lint Markdown files with markdownlint |
 
 ## Project Structure
 
-```
+```text
 src/
 ├── cli.ts              # CLI entry point (Commander program)
 ├── cli.test.ts         # CLI unit tests

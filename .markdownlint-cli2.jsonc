@@ -1,0 +1,170 @@
+{
+  // Strict markdownlint configuration optimized for human readability.
+  // Rule reference: https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md
+  "config": {
+    "default": true,
+
+    // MD003: Heading style — ATX only (# Heading)
+    "heading-style": { "style": "atx" },
+
+    // MD004: Unordered list style — dashes for readability
+    "ul-style": { "style": "dash" },
+
+    // MD007: Unordered list indentation — 2 spaces
+    "ul-indent": { "indent": 2 },
+
+    // MD009: No trailing spaces
+    "no-trailing-spaces": {
+      "br_spaces": 2,
+      "list_item_empty_lines": false
+    },
+
+    // MD010: No hard tabs
+    "no-hard-tabs": true,
+
+    // MD012: No multiple consecutive blank lines
+    "no-multiple-blanks": { "maximum": 1 },
+
+    // MD013: Line length — generous limit for readability; disable for tables and code blocks
+    "line-length": {
+      "line_length": 120,
+      "heading_line_length": 80,
+      "code_block_line_length": 120,
+      "code_blocks": false,
+      "tables": false
+    },
+
+    // MD022: Headings must be surrounded by blank lines
+    "blanks-around-headings": true,
+
+    // MD023: Headings must start at the beginning of the line
+    "heading-start-left": true,
+
+    // MD024: No duplicate heading content (allow in different nesting contexts)
+    "no-duplicate-heading": { "siblings_only": true },
+
+    // MD025: Single top-level heading per file
+    "single-h1": true,
+
+    // MD026: No trailing punctuation in headings
+    "no-trailing-punctuation": { "punctuation": ".,;:!。，；：！" },
+
+    // MD027: No multiple spaces after blockquote symbol
+    "no-multiple-space-blockquote": true,
+
+    // MD028: No blank line inside blockquote
+    "no-blanks-blockquote": true,
+
+    // MD029: Ordered list item prefix — use ordered numbers (1, 2, 3)
+    "ol-prefix": { "style": "ordered" },
+
+    // MD030: Spaces after list markers — single space
+    "list-marker-space": {
+      "ul_single": 1,
+      "ol_single": 1,
+      "ul_multi": 1,
+      "ol_multi": 1
+    },
+
+    // MD031: Fenced code blocks must be surrounded by blank lines
+    "blanks-around-fences": true,
+
+    // MD032: Lists must be surrounded by blank lines
+    "blanks-around-lists": true,
+
+    // MD033: No inline HTML — except common safe elements
+    "no-inline-html": {
+      "allowed_elements": [
+        "br",
+        "details",
+        "summary",
+        "sub",
+        "sup",
+        "kbd",
+        "img"
+      ]
+    },
+
+    // MD034: No bare URLs — use proper links
+    "no-bare-urls": true,
+
+    // MD035: Horizontal rule style — three dashes
+    "hr-style": { "style": "---" },
+
+    // MD036: No emphasis used instead of a heading
+    "no-emphasis-as-heading": true,
+
+    // MD037: No spaces inside emphasis markers
+    "no-space-in-emphasis": true,
+
+    // MD038: No spaces inside code span elements
+    "no-space-in-code": true,
+
+    // MD039: No spaces inside link text
+    "no-space-in-links": true,
+
+    // MD040: Fenced code blocks should have a language specified
+    "fenced-code-language": true,
+
+    // MD041: First line should be a top-level heading
+    "first-line-heading": true,
+
+    // MD044: Proper names should have correct capitalization
+    "proper-names": false,
+
+    // MD045: Images should have alternate text
+    "no-alt-text": true,
+
+    // MD046: Code block style — fenced (not indented)
+    "code-block-style": { "style": "fenced" },
+
+    // MD047: Files should end with a single newline character
+    "single-trailing-newline": true,
+
+    // MD048: Fenced code block style — backticks
+    "code-fence-style": { "style": "backtick" },
+
+    // MD049: Emphasis style — asterisks
+    "emphasis-style": { "style": "asterisk" },
+
+    // MD050: Strong style — asterisks
+    "strong-style": { "style": "asterisk" },
+
+    // MD051: Link fragments should be valid
+    "link-fragments": true,
+
+    // MD052: Reference links and images should use a label that is defined
+    "reference-links-images": true,
+
+    // MD053: Link and image reference definitions should be needed
+    "link-image-reference-definitions": true,
+
+    // MD054: Link and image style
+    "link-image-style": {
+      "autolink": true,
+      "inline": true,
+      "full_reference": true,
+      "collapsed_reference": true,
+      "shortcut_reference": true,
+      "url_inline": true
+    },
+
+    // MD055: Table pipe style — leading and trailing
+    "table-pipe-style": { "style": "leading_and_trailing" },
+
+    // MD056: Table column count — must be consistent
+    "table-column-count": true
+  },
+
+  // Ignore generated, dependency, and prompt template directories
+  "ignores": [
+    "node_modules/**",
+    "dist/**",
+    ".sandcastle/**"
+  ],
+
+  // Globs to lint
+  "globs": [
+    "**/*.md"
+  ]
+}
