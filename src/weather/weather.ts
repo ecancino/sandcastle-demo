@@ -1,4 +1,5 @@
 import { renderTemplate, DEFAULT_WEATHER_TEMPLATE } from "./template.js";
+import { colorizeWeatherValues } from "./colors.js";
 
 export interface WeatherData {
   [key: string]: string;
@@ -60,11 +61,16 @@ export async function fetchWeather(city: string): Promise<WeatherData> {
 
 export function formatWeather(
   data: WeatherData,
-  template?: string
+  template?: string,
+  options?: { color?: boolean }
 ): string {
   const templateData: Record<string, string> = {
     ...data,
     cityUrl: data.city.replace(/ /g, "+"),
   };
-  return renderTemplate(template ?? DEFAULT_WEATHER_TEMPLATE, templateData);
+  const finalData =
+    options?.color && !template
+      ? colorizeWeatherValues(templateData)
+      : templateData;
+  return renderTemplate(template ?? DEFAULT_WEATHER_TEMPLATE, finalData);
 }

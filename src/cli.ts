@@ -1,4 +1,5 @@
 import { Command } from "commander";
+import chalk from "chalk";
 import { fetchWeather, formatWeather } from "./weather/index.js";
 
 export function buildProgram(): Command {
@@ -13,10 +14,10 @@ export function buildProgram(): Command {
     .action(async (city: string) => {
       try {
         const data = await fetchWeather(city);
-        console.log(formatWeather(data));
+        console.log(formatWeather(data, undefined, { color: true }));
       } catch (error) {
         const message = error instanceof Error ? error.message : String(error);
-        console.error(`Error: ${message}`);
+        console.error(chalk.red(`Error: ${message}`));
         process.exitCode = 1;
       }
     });

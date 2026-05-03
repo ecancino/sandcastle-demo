@@ -4,6 +4,7 @@ import {
   formatWeather,
   renderTemplate,
   DEFAULT_WEATHER_TEMPLATE,
+  colorizeWeatherValues,
 } from "./index.js";
 
 describe("weather module barrel export", () => {
@@ -21,5 +22,9 @@ describe("weather module barrel export", () => {
 
   it("exports DEFAULT_WEATHER_TEMPLATE from template", () => {
     expect(DEFAULT_WEATHER_TEMPLATE).toBeTypeOf("string");
+  });
+
+  it("exports colorizeWeatherValues from colors", () => {
+    expect(colorizeWeatherValues).toBeTypeOf("function");
   });
 });
