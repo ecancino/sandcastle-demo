@@ -8,18 +8,10 @@ function run(args: string): string {
 }
 
 describe("cli integration (dev mode via tsx)", () => {
-  it("runs greet command via tsx", () => {
-    expect(run("greet World").trim()).toBe("Hello, World!");
-  });
-
-  it("runs greet command with default name via tsx", () => {
-    expect(run("greet").trim()).toBe("Hello, stranger!");
-  });
-
   it("shows help via tsx", () => {
     const output = run("--help");
     expect(output).toContain("sandcastle-demo");
-    expect(output).toContain("greet");
+    expect(output).not.toContain("greet");
     expect(output).toContain("weather");
   });
 
