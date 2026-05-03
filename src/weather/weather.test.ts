@@ -1,17 +1,12 @@
 import { describe, it, expect, vi, beforeEach, beforeAll } from "vitest";
 import chalk from "chalk";
-import { request } from "undici";
+import { fetch as utilsFetch } from "./utils.js";
 import { fetchWeather, formatWeather, type WeatherData } from "./weather.js";
 import { stripAnsi } from "./test-utils.js";
 
-vi.mock("undici", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("undici")>();
-  return { ...actual, request: vi.fn() };
-});
+vi.mock("./utils.js", () => ({ fetch: vi.fn() }));
 
-const mockRequest = vi.mocked(request);
-
-type MockResponse = Awaited<ReturnType<typeof request>>;
+const mockFetch = vi.mocked(utilsFetch);
 
 const sampleApiResponse = {
   current_condition: [
@@ -67,40 +62,25 @@ describe("fetchWeather", () => {
   });
 
   it("fetches and parses weather data for a city", async () => {
-    mockRequest.mockResolvedValue({
-      statusCode: 200,
-      body: { json: vi.fn().mockResolvedValue(sampleApiResponse), dump: vi.fn() },
-    } as unknown as MockResponse);
+    mockFetch.mockResolvedValue(sampleApiResponse);
 
     const result = await fetchWeather("London");
     expect(result).toEqual(expectedWeatherData);
-    expect(mockRequest).toHaveBeenCalledWith(
-      "https://wttr.in/London?format=j1",
-      expect.objectContaining({ signal: expect.any(AbortSignal) })
-    );
+    expect(mockFetch).toHaveBeenCalledWith("https://wttr.in/London?format=j1");
   });
 
   it("encodes city names with spaces", async () => {
-    mockRequest.mockResolvedValue({
-      statusCode: 200,
-      body: { json: vi.fn().mockResolvedValue(sampleApiResponse), dump: vi.fn() },
-    } as unknown as MockResponse);
+    mockFetch.mockResolvedValue(sampleApiResponse);
 
     await fetchWeather("New York");
-    expect(mockRequest).toHaveBeenCalledWith(
-      "https://wttr.in/New+York?format=j1",
-      expect.objectContaining({ signal: expect.any(AbortSignal) })
-    );
+    expect(mockFetch).toHaveBeenCalledWith("https://wttr.in/New+York?format=j1");
   });
 
   it("throws on non-ok response", async () => {
-    mockRequest.mockResolvedValue({
-      statusCode: 404,
-      body: { dump: vi.fn() },
-    } as unknown as MockResponse);
+    mockFetch.mockRejectedValue(new Error("Failed to fetch: 404"));
 
     await expect(fetchWeather("InvalidCity123")).rejects.toThrow(
-      "Failed to fetch weather: 404"
+      "Failed to fetch: 404"
     );
   });
 });

@@ -1,4 +1,4 @@
-import { request, Agent } from "undici";
+import { fetch } from "./utils.js";
 import { renderTemplate, DEFAULT_WEATHER_TEMPLATE } from "./template.js";
 import { colorizeWeatherValues } from "./colors.js";
 
@@ -43,26 +43,12 @@ export interface WeatherData {
   precipitationMM: string;
 }
 
-const dispatcher = new Agent({
-  connectTimeout: 10000,
-  connections: 5, // Pool size
-});
-
 export async function fetchWeather(city: string): Promise<WeatherData> {
   const encodedCity = city.replace(/ /g, "+");
   const url = `https://wttr.in/${encodedCity}?format=j1`;
 
-  const { statusCode, body } = await request(url, {
-    dispatcher,
-    signal: AbortSignal.timeout(10_000),
-  });
+  const data = await fetch<WttrResponse>(url);
 
-  if (statusCode < 200 || statusCode >= 300) {
-    await body.dump();
-    throw new Error(`Failed to fetch weather: ${statusCode}`);
-  }
-
-  const data = (await body.json()) as WttrResponse;
   const current = data.current_condition[0];
   const area = data.nearest_area[0];
 
