@@ -76,6 +76,11 @@ src/
 ├── cli-integration.test.ts  # CLI integration tests
 ├── greet.ts            # Greeting function
 ├── greet.test.ts       # Greeting tests
-├── weather.ts          # Weather fetching and formatting
-└── weather.test.ts     # Weather tests
+└── weather/
+    ├── index.ts        # Barrel export for weather module
+    ├── index.test.ts   # Barrel export tests
+    ├── weather.ts      # Weather fetching and formatting
+    ├── weather.test.ts # Weather tests
+    ├── template.ts     # Pug template engine
+    └── template.test.ts # Template tests
 ```
