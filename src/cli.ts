@@ -1,5 +1,5 @@
 import { Command } from "commander";
-import { fetchWeather, formatWeather } from "./weather.js";
+import { fetchWeather, formatWeather } from "./weather/index.js";
 
 export function buildProgram(): Command {
   const program = new Command();

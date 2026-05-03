@@ -63,8 +63,11 @@ src/
 ├── cli.ts                   # CLI entry point (Commander program)
 ├── cli.test.ts              # CLI unit tests
 ├── cli-integration.test.ts  # CLI integration tests
-├── weather.ts               # Weather fetching and formatting
-├── weather.test.ts          # Weather tests
-├── template.ts              # Pug template rendering
-└── template.test.ts         # Template tests
+└── weather/
+    ├── index.ts             # Barrel export for weather module
+    ├── index.test.ts        # Barrel export tests
+    ├── weather.ts           # Weather fetching and formatting
+    ├── weather.test.ts      # Weather tests
+    ├── template.ts          # Pug template rendering
+    └── template.test.ts     # Template tests
 ```
