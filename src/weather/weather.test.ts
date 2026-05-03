@@ -2,6 +2,13 @@ import { describe, it, expect, vi, beforeEach, beforeAll } from "vitest";
 import chalk from "chalk";
 import { fetchWeather, formatWeather, type WeatherData } from "./weather.js";
 
+vi.mock("undici", () => ({
+  fetch: vi.fn(),
+}));
+
+import { fetch as undiciFetch } from "undici";
+const mockFetch = vi.mocked(undiciFetch);
+
 const sampleApiResponse = {
   current_condition: [
     {
@@ -56,46 +63,37 @@ describe("fetchWeather", () => {
   });
 
   it("fetches and parses weather data for a city", async () => {
-    vi.stubGlobal(
-      "fetch",
-      vi.fn().mockResolvedValue({
-        ok: true,
-        json: () => Promise.resolve(sampleApiResponse),
-      })
-    );
+    mockFetch.mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve(sampleApiResponse),
+    } as never);
 
     const result = await fetchWeather("London");
     expect(result).toEqual(expectedWeatherData);
-    expect(fetch).toHaveBeenCalledWith(
+    expect(mockFetch).toHaveBeenCalledWith(
       "https://wttr.in/London?format=j1",
       expect.objectContaining({ signal: expect.any(AbortSignal) })
     );
   });
 
   it("encodes city names with spaces", async () => {
-    vi.stubGlobal(
-      "fetch",
-      vi.fn().mockResolvedValue({
-        ok: true,
-        json: () => Promise.resolve(sampleApiResponse),
-      })
-    );
+    mockFetch.mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve(sampleApiResponse),
+    } as never);
 
     await fetchWeather("New York");
-    expect(fetch).toHaveBeenCalledWith(
+    expect(mockFetch).toHaveBeenCalledWith(
       "https://wttr.in/New+York?format=j1",
       expect.objectContaining({ signal: expect.any(AbortSignal) })
     );
   });
 
   it("throws on non-ok response", async () => {
-    vi.stubGlobal(
-      "fetch",
-      vi.fn().mockResolvedValue({
-        ok: false,
-        status: 404,
-      })
-    );
+    mockFetch.mockResolvedValue({
+      ok: false,
+      status: 404,
+    } as never);
 
     await expect(fetchWeather("InvalidCity123")).rejects.toThrow(
       "Failed to fetch weather: 404"

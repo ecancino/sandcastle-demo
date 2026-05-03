@@ -1,3 +1,4 @@
+import { fetch } from "undici";
 import { renderTemplate, DEFAULT_WEATHER_TEMPLATE } from "./template.js";
 import { colorizeWeatherValues } from "./colors.js";
 
@@ -33,7 +34,7 @@ export async function fetchWeather(city: string): Promise<WeatherData> {
       throw new Error(`Failed to fetch weather: ${response.status}`);
     }
 
-    const data = await response.json();
+    const data = (await response.json()) as any;
     const current = data.current_condition[0];
     const area = data.nearest_area[0];
 
