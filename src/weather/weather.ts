@@ -1,4 +1,4 @@
-import { fetch } from "./utils.js";
+import { fetchURL, encodeCity } from "./utils.js";
 import { renderTemplate, DEFAULT_WEATHER_TEMPLATE } from "./template.js";
 import { colorizeWeatherValues } from "./colors.js";
 
@@ -44,10 +44,9 @@ export interface WeatherData {
 }
 
 export async function fetchWeather(city: string): Promise<WeatherData> {
-  const encodedCity = city.replace(/ /g, "+");
-  const url = `https://wttr.in/${encodedCity}?format=j1`;
+  const url = `https://wttr.in/${encodeCity(city)}?format=j1`;
 
-  const data = await fetch<WttrResponse>(url);
+  const data = await fetchURL<WttrResponse>(url);
 
   const current = data.current_condition[0];
   const area = data.nearest_area[0];
@@ -74,7 +73,7 @@ export async function fetchWeather(city: string): Promise<WeatherData> {
 export function formatWeather(data: WeatherData): string {
   const templateData: Record<string, string> = {
     ...data,
-    cityUrl: data.city.replace(/ /g, "+"),
+    cityUrl: encodeCity(data.city),
   };
 
   return renderTemplate(
