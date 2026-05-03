@@ -59,18 +59,14 @@ export async function fetchWeather(city: string): Promise<WeatherData> {
   }
 }
 
-export function formatWeather(
-  data: WeatherData,
-  template?: string,
-  options?: { color?: boolean }
-): string {
+export function formatWeather(data: WeatherData): string {
   const templateData: Record<string, string> = {
     ...data,
     cityUrl: data.city.replace(/ /g, "+"),
   };
-  const finalData =
-    options?.color && !template
-      ? colorizeWeatherValues(templateData)
-      : templateData;
-  return renderTemplate(template ?? DEFAULT_WEATHER_TEMPLATE, finalData);
+
+  return renderTemplate(
+    DEFAULT_WEATHER_TEMPLATE,
+    colorizeWeatherValues(templateData),
+  );
 }

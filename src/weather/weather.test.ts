@@ -105,7 +105,7 @@ describe("fetchWeather", () => {
 
 describe("formatWeather", () => {
   it("formats weather data as a readable string", () => {
-    const output = formatWeather(expectedWeatherData);
+    const output = formatWeather(expectedWeatherData).replace(/\x1b\[[0-9;]*m/g, "");
 
     expect(output).toContain("London");
     expect(output).toContain("United Kingdom");
@@ -125,54 +125,20 @@ describe("formatWeather", () => {
     expect(output).toContain("https://wttr.in/London");
   });
 
-  it("accepts a custom template", () => {
-    const output = formatWeather(
-      expectedWeatherData,
-      "| !{city}: !{temperatureC}°C"
-    );
-    expect(output).toBe("London: 18°C");
-  });
-
-  it("uses the default template when none is provided", () => {
-    const defaultOutput = formatWeather(expectedWeatherData);
-    const explicitDefault = formatWeather(expectedWeatherData, undefined);
-    expect(defaultOutput).toBe(explicitDefault);
-  });
-
-  it("applies ANSI color codes when color option is true", () => {
-    const output = formatWeather(expectedWeatherData, undefined, {
-      color: true,
-    });
+  it("applies ANSI color codes", () => {
+    const output = formatWeather(expectedWeatherData);
     expect(output).toContain("\x1b[");
   });
 
-  it("does not apply ANSI codes by default", () => {
-    const output = formatWeather(expectedWeatherData);
-    expect(output).not.toContain("\x1b[");
-  });
-
   it("colored output still contains all weather data", () => {
-    const output = formatWeather(expectedWeatherData, undefined, {
-      color: true,
-    });
-    const stripped = output.replace(/\x1b\[[0-9;]*m/g, "");
-    expect(stripped).toContain("London");
-    expect(stripped).toContain("United Kingdom");
-    expect(stripped).toContain("18°C");
-    expect(stripped).toContain("64°F");
-    expect(stripped).toContain("Partly cloudy");
-    expect(stripped).toContain("72%");
-    expect(stripped).toContain("NW");
-    expect(stripped).toContain("https://wttr.in/London");
-  });
-
-  it("does not colorize when using a custom template", () => {
-    const output = formatWeather(
-      expectedWeatherData,
-      "| !{city}: !{temperatureC}°C",
-      { color: true }
-    );
-    expect(output).not.toContain("\x1b[");
-    expect(output).toBe("London: 18°C");
+    const output = formatWeather(expectedWeatherData).replace(/\x1b\[[0-9;]*m/g, "");
+    expect(output).toContain("London");
+    expect(output).toContain("United Kingdom");
+    expect(output).toContain("18°C");
+    expect(output).toContain("64°F");
+    expect(output).toContain("Partly cloudy");
+    expect(output).toContain("72%");
+    expect(output).toContain("NW");
+    expect(output).toContain("https://wttr.in/London");
   });
 });

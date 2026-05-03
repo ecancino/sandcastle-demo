@@ -1,3 +1,13 @@
-export { fetchWeather, formatWeather, type WeatherData } from "./weather.js";
-export { renderTemplate, DEFAULT_WEATHER_TEMPLATE } from "./template.js";
-export { colorizeWeatherValues } from "./colors.js";
+import chalk from "chalk";
+import { fetchWeather, formatWeather } from "./weather.js";
+
+export async function weatherCommand(city: string) {
+  try {
+    const data = await fetchWeather(city);
+    console.log(formatWeather(data));
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    console.error(chalk.red(`Error: ${message}`));
+    process.exitCode = 1;
+  }
+}
