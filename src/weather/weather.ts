@@ -2,6 +2,28 @@ import { fetch } from "undici";
 import { renderTemplate, DEFAULT_WEATHER_TEMPLATE } from "./template.js";
 import { colorizeWeatherValues } from "./colors.js";
 
+interface WttrResponse {
+  current_condition: Array<{
+    temp_C: string;
+    temp_F: string;
+    FeelsLikeC: string;
+    FeelsLikeF: string;
+    humidity: string;
+    windspeedKmph: string;
+    winddir16Point: string;
+    weatherDesc: Array<{ value: string }>;
+    visibility: string;
+    pressure: string;
+    uvIndex: string;
+    precipMM: string;
+  }>;
+  nearest_area: Array<{
+    areaName: Array<{ value: string }>;
+    country: Array<{ value: string }>;
+    region: Array<{ value: string }>;
+  }>;
+}
+
 export interface WeatherData {
   [key: string]: string;
   city: string;
@@ -34,7 +56,7 @@ export async function fetchWeather(city: string): Promise<WeatherData> {
       throw new Error(`Failed to fetch weather: ${response.status}`);
     }
 
-    const data = (await response.json()) as any;
+    const data = (await response.json()) as WttrResponse;
     const current = data.current_condition[0];
     const area = data.nearest_area[0];
 
