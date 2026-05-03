@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeAll } from "vitest";
 import chalk from "chalk";
 import { colorizeWeatherValues } from "./colors.js";
+import { stripAnsi } from "./test-utils.js";
 
 beforeAll(() => {
   chalk.level = 1;
@@ -72,7 +73,6 @@ describe("colorizeWeatherValues", () => {
 
   it("preserves all original text content within ANSI codes", () => {
     const result = colorizeWeatherValues(input);
-    const stripAnsi = (s: string) => s.replace(/\x1b\[[0-9;]*m/g, "");
     for (const key of Object.keys(input)) {
       expect(stripAnsi(result[key])).toBe(input[key]);
     }

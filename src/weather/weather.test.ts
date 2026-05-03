@@ -1,13 +1,17 @@
 import { describe, it, expect, vi, beforeEach, beforeAll } from "vitest";
 import chalk from "chalk";
+import { request } from "undici";
 import { fetchWeather, formatWeather, type WeatherData } from "./weather.js";
+import { stripAnsi } from "./test-utils.js";
 
-vi.mock("undici", () => ({
-  fetch: vi.fn(),
-}));
+vi.mock("undici", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("undici")>();
+  return { ...actual, request: vi.fn() };
+});
 
-import { fetch as undiciFetch } from "undici";
-const mockFetch = vi.mocked(undiciFetch);
+const mockRequest = vi.mocked(request);
+
+type MockResponse = Awaited<ReturnType<typeof request>>;
 
 const sampleApiResponse = {
   current_condition: [
@@ -63,37 +67,37 @@ describe("fetchWeather", () => {
   });
 
   it("fetches and parses weather data for a city", async () => {
-    mockFetch.mockResolvedValue({
-      ok: true,
-      json: () => Promise.resolve(sampleApiResponse),
-    } as never);
+    mockRequest.mockResolvedValue({
+      statusCode: 200,
+      body: { json: vi.fn().mockResolvedValue(sampleApiResponse), dump: vi.fn() },
+    } as unknown as MockResponse);
 
     const result = await fetchWeather("London");
     expect(result).toEqual(expectedWeatherData);
-    expect(mockFetch).toHaveBeenCalledWith(
+    expect(mockRequest).toHaveBeenCalledWith(
       "https://wttr.in/London?format=j1",
       expect.objectContaining({ signal: expect.any(AbortSignal) })
     );
   });
 
   it("encodes city names with spaces", async () => {
-    mockFetch.mockResolvedValue({
-      ok: true,
-      json: () => Promise.resolve(sampleApiResponse),
-    } as never);
+    mockRequest.mockResolvedValue({
+      statusCode: 200,
+      body: { json: vi.fn().mockResolvedValue(sampleApiResponse), dump: vi.fn() },
+    } as unknown as MockResponse);
 
     await fetchWeather("New York");
-    expect(mockFetch).toHaveBeenCalledWith(
+    expect(mockRequest).toHaveBeenCalledWith(
       "https://wttr.in/New+York?format=j1",
       expect.objectContaining({ signal: expect.any(AbortSignal) })
     );
   });
 
   it("throws on non-ok response", async () => {
-    mockFetch.mockResolvedValue({
-      ok: false,
-      status: 404,
-    } as never);
+    mockRequest.mockResolvedValue({
+      statusCode: 404,
+      body: { dump: vi.fn() },
+    } as unknown as MockResponse);
 
     await expect(fetchWeather("InvalidCity123")).rejects.toThrow(
       "Failed to fetch weather: 404"
@@ -103,7 +107,7 @@ describe("fetchWeather", () => {
 
 describe("formatWeather", () => {
   it("formats weather data as a readable string", () => {
-    const output = formatWeather(expectedWeatherData).replace(/\x1b\[[0-9;]*m/g, "");
+    const output = stripAnsi(formatWeather(expectedWeatherData));
 
     expect(output).toContain("London");
     expect(output).toContain("United Kingdom");
@@ -129,7 +133,7 @@ describe("formatWeather", () => {
   });
 
   it("colored output still contains all weather data", () => {
-    const output = formatWeather(expectedWeatherData).replace(/\x1b\[[0-9;]*m/g, "");
+    const output = stripAnsi(formatWeather(expectedWeatherData));
     expect(output).toContain("London");
     expect(output).toContain("United Kingdom");
     expect(output).toContain("18°C");

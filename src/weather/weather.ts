@@ -1,4 +1,4 @@
-import { fetch } from "undici";
+import { request, Agent } from "undici";
 import { renderTemplate, DEFAULT_WEATHER_TEMPLATE } from "./template.js";
 import { colorizeWeatherValues } from "./colors.js";
 
@@ -43,43 +43,46 @@ export interface WeatherData {
   precipitationMM: string;
 }
 
+const dispatcher = new Agent({
+  connectTimeout: 10000,
+  connections: 5, // Pool size
+});
+
 export async function fetchWeather(city: string): Promise<WeatherData> {
   const encodedCity = city.replace(/ /g, "+");
   const url = `https://wttr.in/${encodedCity}?format=j1`;
 
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 10_000);
+  const { statusCode, body } = await request(url, {
+    dispatcher,
+    signal: AbortSignal.timeout(10_000),
+  });
 
-  try {
-    const response = await fetch(url, { signal: controller.signal });
-    if (!response.ok) {
-      throw new Error(`Failed to fetch weather: ${response.status}`);
-    }
-
-    const data = (await response.json()) as WttrResponse;
-    const current = data.current_condition[0];
-    const area = data.nearest_area[0];
-
-    return {
-      city: area.areaName[0].value,
-      country: area.country[0].value,
-      region: area.region[0].value,
-      temperatureC: current.temp_C,
-      temperatureF: current.temp_F,
-      feelsLikeC: current.FeelsLikeC,
-      feelsLikeF: current.FeelsLikeF,
-      humidity: current.humidity,
-      windSpeedKmph: current.windspeedKmph,
-      windDirection: current.winddir16Point,
-      description: current.weatherDesc[0].value,
-      visibility: current.visibility,
-      pressure: current.pressure,
-      uvIndex: current.uvIndex,
-      precipitationMM: current.precipMM,
-    };
-  } finally {
-    clearTimeout(timeout);
+  if (statusCode < 200 || statusCode >= 300) {
+    await body.dump();
+    throw new Error(`Failed to fetch weather: ${statusCode}`);
   }
+
+  const data = (await body.json()) as WttrResponse;
+  const current = data.current_condition[0];
+  const area = data.nearest_area[0];
+
+  return {
+    city: area.areaName[0].value,
+    country: area.country[0].value,
+    region: area.region[0].value,
+    temperatureC: current.temp_C,
+    temperatureF: current.temp_F,
+    feelsLikeC: current.FeelsLikeC,
+    feelsLikeF: current.FeelsLikeF,
+    humidity: current.humidity,
+    windSpeedKmph: current.windspeedKmph,
+    windDirection: current.winddir16Point,
+    description: current.weatherDesc[0].value,
+    visibility: current.visibility,
+    pressure: current.pressure,
+    uvIndex: current.uvIndex,
+    precipitationMM: current.precipMM,
+  };
 }
 
 export function formatWeather(data: WeatherData): string {
