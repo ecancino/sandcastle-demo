@@ -123,7 +123,7 @@ describe("formatWeather", () => {
   it("accepts a custom template", () => {
     const output = formatWeather(
       expectedWeatherData,
-      "{{city}}: {{temperatureC}}°C"
+      "| !{city}: !{temperatureC}°C"
     );
     expect(output).toBe("London: 18°C");
   });
