@@ -59,6 +59,13 @@ for (let iteration = 1; iteration <= MAX_ITERATIONS; iteration++) {
   //
   // It outputs a <plan> JSON block — we parse that to drive Phase 2.
   // -------------------------------------------------------------------------
+  // Pre-fetch issues on the host to avoid hitting the 30s prompt-expansion timeout.
+  const { execSync } = await import("node:child_process");
+  const issuesJson = execSync(
+    `gh issue list --state open --label Sandcastle --json number,title,body,labels,comments --jq '[.[] | {number, title, body, labels: [.labels[].name], comments: [.comments[].body]}]'`,
+    { encoding: "utf8", timeout: 120_000 },
+  ).trim();
+
   const plan = await sandcastle.run({
     hooks,
     sandbox: docker(),
@@ -69,6 +76,7 @@ for (let iteration = 1; iteration <= MAX_ITERATIONS; iteration++) {
     // Opus for planning: dependency analysis benefits from deeper reasoning.
     agent: sandcastle.claudeCode("claude-opus-4-6"),
     promptFile: "./.sandcastle/plan-prompt.md",
+    promptArgs: { ISSUES_JSON: issuesJson },
   });
 
   // Extract the <plan>…</plan> block from the agent's stdout.
@@ -121,6 +129,7 @@ for (let iteration = 1; iteration <= MAX_ITERATIONS; iteration++) {
         const implement = await sandbox.run({
           name: "implementer",
           maxIterations: 100,
+          idleTimeoutSeconds: 1200,
           agent: sandcastle.claudeCode("claude-opus-4-6"),
           promptFile: "./.sandcastle/implement-prompt.md",
           promptArgs: {
